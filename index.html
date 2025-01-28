@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Sheets API</title>
+    <script src="https://apis.google.com/js/api.js"></script>
     <script>
         const apiKey = 'AIzaSyA4R0bSzJh_OddeOLIwo3HOCNPy4jK7Sjw'; // Your API Key
         const spreadsheetId = '1bKq3Qyb2FGDtjpSq8NqEQrdL6lhDEa9whZ3A3WHCYrw'; // Correct Sheet ID
@@ -12,28 +12,31 @@
 
         async function updateSheet() {
             try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
-                const body = {
-                    range: range,
-                    majorDimension: "ROWS",
-                    values: [
-                        ["Hello", "World"]
-                    ]
-                };
-                
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
+                await gapi.load('client:auth2', async () => {
+                    await gapi.client.init({
+                        apiKey: apiKey,
+                        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+                    });
 
-                if (response.ok) {
-                    console.log('Sheet updated successfully');
-                } else {
-                    console.error('Error updating sheet:', response.statusText);
-                }
+                    const body = {
+                        values: [
+                            ["Hello", "World"]
+                        ]
+                    };
+
+                    const response = await gapi.client.sheets.spreadsheets.values.update({
+                        spreadsheetId: spreadsheetId,
+                        range: range,
+                        valueInputOption: 'RAW',
+                        resource: body
+                    });
+
+                    if (response.status === 200) {
+                        console.log('Sheet updated successfully', response);
+                    } else {
+                        console.error('Error updating sheet', response);
+                    }
+                });
             } catch (error) {
                 console.error('Caught an error:', error);
             }
