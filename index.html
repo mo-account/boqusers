@@ -6,48 +6,71 @@
     <title>Google Sheets API</title>
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
-        const apiKey = 'AIzaSyA4R0bSzJh_OddeOLIwo3HOCNPy4jK7Sjw'; // Your API Key
-        const spreadsheetId = '1bKq3Qyb2FGDtjpSq8NqEQrdL6lhDEa9whZ3A3WHCYrw'; // Correct Sheet ID
-        const range = 'Sheet1!A1:Z100';
+        const CLIENT_ID = '209608535589-4f6ooodahgobog59c9bech7r71trejrp.apps.googleusercontent.com'; // Your OAuth 2.0 Client ID
+        const API_KEY = 'AIzaSyA4R0bSzJh_OddeOLIwo3HOCNPy4jK7Sjw'; // Your API Key
+        const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+        const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+
+        function handleClientLoad() {
+            gapi.load('client:auth2', initClient);
+        }
+
+        function initClient() {
+            gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                discoveryDocs: DISCOVERY_DOCS,
+                scope: SCOPES
+            }).then(() => {
+                document.getElementById('signIn').onclick = handleAuthClick;
+                document.getElementById('signOut').onclick = handleSignOutClick;
+                document.getElementById('updateSheet').onclick = updateSheet;
+            });
+        }
+
+        function handleAuthClick(event) {
+            gapi.auth2.getAuthInstance().signIn();
+        }
+
+        function handleSignOutClick(event) {
+            gapi.auth2.getAuthInstance().signOut();
+        }
 
         async function updateSheet() {
+            const spreadsheetId = '1bKq3Qyb2FGDtjpSq8NqEQrdL6lhDEa9whZ3A3WHCYrw'; // Correct Sheet ID
+            const range = 'Sheet1!A1:Z100';
+            const values = [
+                ["Hello", "World"]
+            ];
+
+            const body = {
+                values: values
+            };
+
             try {
-                await gapi.load('client:auth2', async () => {
-                    await gapi.client.init({
-                        apiKey: apiKey,
-                        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-                    });
-
-                    const body = {
-                        values: [
-                            ["Hello", "World"]
-                        ]
-                    };
-
-                    const response = await gapi.client.sheets.spreadsheets.values.update({
-                        spreadsheetId: spreadsheetId,
-                        range: range,
-                        valueInputOption: 'RAW',
-                        resource: body
-                    });
-
-                    if (response.status === 200) {
-                        console.log('Sheet updated successfully', response);
-                    } else {
-                        console.error('Error updating sheet', response);
-                    }
+                const response = await gapi.client.sheets.spreadsheets.values.update({
+                    spreadsheetId: spreadsheetId,
+                    range: range,
+                    valueInputOption: 'RAW',
+                    resource: body
                 });
+
+                if (response.status === 200) {
+                    console.log('Sheet updated successfully', response);
+                } else {
+                    console.error('Error updating sheet', response);
+                }
             } catch (error) {
                 console.error('Caught an error:', error);
             }
         }
 
-        window.onload = () => {
-            document.getElementById('updateSheet').onclick = updateSheet;
-        };
+        document.addEventListener('DOMContentLoaded', handleClientLoad);
     </script>
 </head>
 <body>
+    <button id="signIn">Sign In</button>
+    <button id="signOut">Sign Out</button>
     <button id="updateSheet">Update Sheet</button>
 </body>
 </html>
