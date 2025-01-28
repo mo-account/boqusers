@@ -10,27 +10,31 @@
         const range = 'Sheet1!A1:Z100';
 
         async function updateSheet() {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
-            const body = {
-                range: range,
-                majorDimension: "ROWS",
-                values: [
-                    ["Hello", "World"]
-                ]
-            };
-            
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            });
+            try {
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+                const body = {
+                    range: range,
+                    majorDimension: "ROWS",
+                    values: [
+                        ["Hello", "World"]
+                    ]
+                };
+                
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
 
-            if (response.ok) {
-                console.log('Sheet updated successfully');
-            } else {
-                console.error('Error updating sheet:', response.statusText);
+                if (response.ok) {
+                    console.log('Sheet updated successfully');
+                } else {
+                    console.error('Error updating sheet:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Caught an error:', error);
             }
         }
 
@@ -43,4 +47,3 @@
     <button id="updateSheet">Update Sheet</button>
 </body>
 </html>
-
