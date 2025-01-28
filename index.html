@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com https://accounts.google.com">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Sheets API</title>
     <script src="https://apis.google.com/js/api.js"></script>
@@ -12,16 +13,19 @@
         const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
         function handleClientLoad() {
+            console.log('Loading Google API client...');
             gapi.load('client:auth2', initClient);
         }
 
         function initClient() {
+            console.log('Initializing Google API client...');
             gapi.client.init({
                 apiKey: API_KEY,
                 clientId: CLIENT_ID,
                 discoveryDocs: DISCOVERY_DOCS,
                 scope: SCOPES
             }).then(() => {
+                console.log('Google API client initialized.');
                 document.getElementById('signIn').onclick = handleAuthClick;
                 document.getElementById('signOut').onclick = handleSignOutClick;
                 document.getElementById('updateSheet').onclick = updateSheet;
@@ -31,18 +35,21 @@
         }
 
         function handleAuthClick(event) {
+            console.log('Sign In button clicked.');
             gapi.auth2.getAuthInstance().signIn().catch(error => {
                 console.error('Error during sign-in:', error);
             });
         }
 
         function handleSignOutClick(event) {
+            console.log('Sign Out button clicked.');
             gapi.auth2.getAuthInstance().signOut().catch(error => {
                 console.error('Error during sign-out:', error);
             });
         }
 
         async function updateSheet() {
+            console.log('Update Sheet button clicked.');
             const spreadsheetId = '1bKq3Qyb2FGDtjpSq8NqEQrdL6lhDEa9whZ3A3WHCYrw'; // Correct Sheet ID
             const range = 'Sheet1!A1:Z100';
             const values = [
