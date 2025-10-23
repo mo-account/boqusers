@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOQs (مقايسة) – Smart Excel Tool for Underground Cable Projects</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333; 
+      transition: direction 0.3s;
+      overflow-x: hidden;
+    }
+    
+    header { 
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      animation: slideDown 0.5s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    
+    header h1 { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    button { 
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    .lang-btn { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: 2px solid transparent;
+    }
+    
+    .lang-btn:hover {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+    
+    .hero { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      text-align: center;
+      padding: 100px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: moveBackground 20s linear infinite;
+    }
+    
+    @keyframes moveBackground {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .hero h2 { 
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      line-height: 1.2;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .btn-main { 
+      background: white;
+      color: #667eea;
+      margin: 10px;
+      padding: 15px 35px;
+      font-size: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-main:hover {
+      background: #f8f9fa;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    
+    .btn-secondary { 
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      border: 2px solid white;
+      margin: 10px;
+      padding: 15px 35px;
+      font-size: 18px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .btn-secondary:hover {
+      background: white;
+      color: #667eea;
+    }
+    
+    .section { 
+      background: white;
+      padding: 70px 20px;
+      margin: 40px auto;
+      max-width: 1100px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      animation: fadeIn 0.8s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .section h3 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+    }
+    
+    .about p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #555;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .features ul { 
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .features li { 
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 25px;
+      border-radius: 15px;
+      font-size: 1.05rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border-left: 4px solid #667eea;
+    }
+    
+    .features li:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .update-notice {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      margin-top: 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    .update-notice span {
+      display: inline-block;
+      margin-right: 10px;
+      font-size: 1.4rem;
+    }
+    
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      max-width: 900px;
+      margin: 30px auto;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+    }
+    
+    .contact {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 50px 20px !important;
+    }
+    
+    .contact h3 {
+      color: white !important;
+      -webkit-text-fill-color: white;
+    }
+    
+    .contact p {
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+    
+    .contact a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .contact a:hover {
+      background: white;
+      color: #667eea;
+      transform: scale(1.05);
+    }
+    
+    footer { 
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      font-size: 1rem;
+    }
+    
+    .floating-badge {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+      font-weight: 700;
+      animation: pulse 2s infinite;
+      z-index: 999;
+    }
+    
+    @media (max-width: 768px) {
+      .hero h2 { font-size: 2rem; }
+      .hero p { font-size: 1rem; }
+      .section { margin: 20px; }
+      .features ul { grid-template-columns: 1fr; }
+      .floating-badge { bottom: 20px; right: 20px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-badge">✨ 10 Free BOQs!</div>
+  
+  <header>
+    <h1>BOQs (مقايسة)</h1>
+    <button class="lang-btn" onclick="toggleLang()">العربية</button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2 id="hero-title">BOQs (مقايسة) – Smart Excel Tool for Underground Cable Projects</h2>
+      <p id="hero-sub">Easily prepare professional Bills of Quantities for MV, LV, or mixed cable projects in one click. Get your first 10 BOQs (مقايسات) for free, then top up your credit as you like.</p>
+      <div>
+        <button class="btn-main" onclick="downloadTool()" id="download-btn">Download Tool</button>
+        <button class="btn-secondary" onclick="watchDemo()" id="demo-btn">Watch Demo</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about">
+    <h3 id="about-title">Why Choose BOQs (مقايسة)?</h3>
+    <p id="about-text">BOQs (مقايسة) automates the complex process of preparing Bill of Quantities for underground electrical projects. It simplifies the preparation of BOQs, no matter how big the project is , and project summaries—saving engineers hours of manual work. The tool provides 10 free BOQs (مقايسات) to start, and you can easily top up your credit anytime.</p>
+    <div class="update-notice" id="update-notice">
+      <span>🔄</span>
+      <span id="update-text">We provide you continuous updates and improvements for the tool!</span>
+    </div>
+  </section>
+
+  <section class="section about">
+    <h3 id="who-title">Who Can Use This Tool?</h3>
+    <p id="who-text">Anyone who prepares BOQs for underground cable projects—including engineers and technicians working for contractors, consulting offices, or utility companies. This tool will save you valuable time and ensure accuracy in your calculations.</p>
+  </section>
+
+  <section class="section features">
+    <h3 id="features-title">Key Features</h3>
+    <ul id="features-list">
+      <li>⚡ One-click BOQ (مقايسة) generation</li>
+      <li>⚡ Supports MV, LV, or mixed projects</li>
+      <li>⚡ Accurate auto-calculations for all components</li>
+      <li>⚡ Handles large Projects with speed</li>
+      <li>⚡ You can adjust settings as per municipality requirements and voltage level</li>
+      <li>💎 Includes 10 free BOQs (مقايسات) – then top up your credit as needed</li>
+    </ul>
+  </section>
+
+  <section class="section video" style="text-align:center;">
+    <h3 id="video-title">See BOQs (مقايسة) in Action and tutorial</h3>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" title="BOQs (مقايسة) Demo" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <section class="section contact" style="text-align:center;">
+    <h3 id="contact-title">Contact Us</h3>
+    <p><strong>Email:</strong> <a href="mailto:UGC.BOQ@gmail.com">UGC.BOQ@gmail.com</a></p>
+  </section>
+
+  <footer>
+    <p>© 2025 BOQs (مقايسة). All rights reserved.</p>
+  </footer>
+
+  <script>
+    const content = {
+      en: {
+        lang: 'العربية',
+        title: 'BOQs (مقايسة) – Smart Excel Tool for Underground Cable Projects',
+        subtitle: 'Easily prepare professional Bills of Quantities for MV, LV, or mixed cable projects in one click. Get your first 10 BOQs (مقايسات) for free, then top up your credit as you like.',
+        aboutTitle: 'Why Choose BOQs (مقايسة)?',
+        aboutText: 'BOQs (مقايسة) automates the process of preparing Bill of Quantities for underground electrical projects. It simplifies calculating BOQ items both work and materials whatever big is the project. You get 10 free BOQs (مقايسات) to start, and can easily top up your credit anytime.',
+        updateText: 'Receive continuous updates and improvements for the tool automatically!',
+        whoTitle: 'Who Can Use This Tool?',
+        whoText: 'Anyone who prepares BOQs for underground cable projects—including engineers and technicians working for contractors, consulting offices, or other. This tool will save you valuable time and ensure accuracy in your calculations.',
+        featuresTitle: 'Key Features',
+        features: [
+          '⚡ One-click BOQ (مقايسة) generation',
+          '⚡ Supports MV, LV, or mixed projects',
+          '⚡ Accurate auto-calculations for all components',
+          '⚡ Handles large Projects with speed',
+          '⚡ You can adjust settings as per municipality requirements and voltage level',
+          '💎 Includes 10 free BOQs (مقايسات) – top up your credit as needed'
+        ],
+        videoTitle: 'See BOQs (مقايسة) in Action and tutorial videos',
+        contactTitle: 'Contact Us',
+        download: 'Download Tool',
+        demo: 'Watch Demo'
+      },
+      ar: {
+        lang: 'English',
+        title: 'أداة BOQs (مقايسة) – لإعداد مقايسات لمشاريع الكابلات الأرضية',
+        subtitle: 'قم بإعداد مقايسات لمشاريع الكابلات الأرضية (جهد متوسط أو منخفض أو مختلط) بضغطة زر واحدة. ستحصل على أول 10 مقايسات مجانًا، ويمكنك بعد ذلك الحصول على رصيد إضافي بسهولة.',
+        aboutTitle: 'لماذا BOQs (مقايسة)؟',
+        aboutText: 'تقوم أداة BOQs (مقايسة) بأتمتة عملية إعداد المقايسات لمشاريع الكهرباء الأرضية. تبسط حساب بنود المقايسات كأعمال ومواد مهما كان حجم المشروع. ستحصل على 10 مقايسات مجانية عند البدء، ويمكنك الحصول على المزيد من الرصيد في أي وقت.',
+        updateText: 'سنوفر لك تحديثات مستمرة للأداة',
+        whoTitle: 'من يمكنه استخدام هذه الأداة؟',
+        whoText: 'أي شخص يقوم بإعداد المقايسات لمشاريع الكابلات الأرضية—بما في ذلك المهندسين والفنيين العاملين لدى المقاولين أو المكاتب الاستشارية أو غيرها. ستوفر عليك هذه الأداة وقتًا ثمينًا وتضمن دقة حساباتك.',
+        featuresTitle: 'المميزات الرئيسية',
+        features: [
+          '⚡ إنشاء مقايسة بضغطة واحدة',
+          '⚡ يدعم مشاريع الجهد المتوسط والمنخفض والمختلط',
+          '⚡ حسابات دقيقة تلقائية لجميع المكونات',
+          '⚡ يتعامل مع المشاريع الكبيرة ( مشاريع تحويل الشبكة الهوائية لأرضية - مشاريع الاسكان ) بسرعة',
+          '⚡ يمكن تغيير الإعدادت و فقاً لإشتراطات البلدية في منطقتك و وفقاً لجهد المشروع و غيرها',
+          '💎 يشمل 10 مقايسات مجانية – ويمكنك الحصول على المزيد بسهولة'
+        ],
+        videoTitle: 'شاهد BOQs (مقايسة) أثناء العمل و فيديوهات تعليمية',
+        contactTitle: 'تواصل معنا',
+        download: 'تحميل الأداة',
+        demo: 'مشاهدة العرض'
+      }
+    };
+
+    let current = 'en';
+    function toggleLang() {
+      current = current === 'en' ? 'ar' : 'en';
+      const c = content[current];
+      document.body.dir = current === 'ar' ? 'rtl' : 'ltr';
+      document.querySelector('.lang-btn').textContent = c.lang;
+      document.getElementById('hero-title').textContent = c.title;
+      document.getElementById('hero-sub').textContent = c.subtitle;
+      document.getElementById('about-title').textContent = c.aboutTitle;
+      document.getElementById('about-text').textContent = c.aboutText;
+      document.getElementById('update-text').textContent = c.updateText;
+      document.getElementById('who-title').textContent = c.whoTitle;
+      document.getElementById('who-text').textContent = c.whoText;
+      document.getElementById('features-title').textContent = c.featuresTitle;
+      document.getElementById('features-list').innerHTML = c.features.map(f => `<li>${f}</li>`).join('');
+      document.getElementById('video-title').textContent = c.videoTitle;
+      document.getElementById('contact-title').textContent = c.contactTitle;
+      document.getElementById('download-btn').textContent = c.download;
+      document.getElementById('demo-btn').textContent = c.demo;
+    }
+
+    function downloadTool() {
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = 'UGC BOQ.xlsm';
+      link.download = 'UGC BOQ.xlsm';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function watchDemo() {
+      window.open('https://www.youtube.com/watch?v=YOUR_VIDEO_ID', '_blank');
+    }
+  </script>
+</body>
+</html>
